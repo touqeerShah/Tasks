@@ -1,0 +1,50 @@
+{
+  "dependencies": {
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
+    "@openzeppelin/hardhat-upgrades": "^3.0.5",
+    "@openzeppelin/test-helpers": "^0.5.16",
+    "alchemy-sdk": "^3.2.0",
+    "dotenv": "^16.4.5",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-deploy": "^0.12.1",
+    "hardhat-gas-reporter": "^1.0.10",
+    "solhint": "^4.1.1",
+    "solidity-coverage": "^0.8.11"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
+    "@nomicfoundation/hardhat-ethers": "^3.0.5",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.4",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/chai": "^4.3.12",
+    "@types/mocha": "^10.0.6",
+    "chai": "^4.4.1",
+    "hardhat": "^2.21.0",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.4.2"
+  },
+  "scripts": {
+    "slither": "slither . --solc-remaps '@openzeppelin=node_modules/@openzeppelin ' --exclude naming-convention,external-function,low-level-calls",
+    "toolbox": "docker run -it --rm -v $PWD:/src trailofbits/eth-security-toolbox",
+    "myth": "docker run -it --rm -v $PWD:/src mythril/myth",
+    "test:v1": " hardhat test ./test/unit/unit-contract-v1-test.js --network localhost",
+    "test:v2": " hardhat test ./test/unit/unit-contract-v2-test.js --network localhost",
+    "echidna": "hardhat compile && echidna-test . --test-mode assertion --contract FarmTest   --config echidna.config.yml",
+    "test:staging": "hardhat test --network goerli",
+    "lint": "solhint 'contracts/_.sol'",
+    "lint:fix": "solhint 'contracts/**/_.sol' --fix",
+    "format": "prettier --write .",
+    "coverage": "hardhat coverage",
+    "build": "hardhat compile",
+    "deploy:v1": "hardhat deploy --tags 'v1' --network localhost   ",
+    "deploy:v2": "hardhat deploy --tags 'v2 --network localhost   ",
+    "deploy:staging": "hardhat deploy --network goerli",
+    "node": "hardhat node"
+  }
+}

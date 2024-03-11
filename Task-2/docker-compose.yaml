@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+
+
+  foundry:
+      image: foundry
+      restart: always
+      command: sleep 100000
+      volumes: 
+        - .:/tmp
+volumes:
+  db:
+    driver: local
+
