@@ -1,0 +1,6 @@
+[submodule "Task-2/lib/openzeppelin-foundry-upgrades"]
+	path = Task-2/lib/openzeppelin-foundry-upgrades
+	url = https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades
+[submodule "Task-2/lib/openzeppelin-contracts-upgradeable"]
+	path = Task-2/lib/openzeppelin-contracts-upgradeable
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable

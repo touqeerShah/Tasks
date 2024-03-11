@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
+
 interface ISurveyContract {
     // Events to be emitted
     event CreateSurvey(uint256 indexed proposalId, uint256 indexed surveyId, string indexed description);

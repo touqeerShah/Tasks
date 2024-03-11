@@ -2,8 +2,6 @@
 pragma solidity 0.8.20;
 
 interface IStakingContract {
-
-    
     // Events
     event Staked(address indexed user, uint256 indexed amount);
     event Unstaked(address indexed user, uint256 indexed amount);
@@ -20,7 +18,7 @@ interface IStakingContract {
     function whitelistToken(address _token) external;
     function dewhitelistToken(address _token) external;
     function setGovernanceToken(address _token) external;
-    function transferGovernanceTokenOwnership(address newOwner) external ;
+    function transferGovernanceTokenOwnership(address newOwner) external;
     function stake(address _token, uint256 _amount) external;
     function unstake(address _token) external;
     function getTotalStaked() external view returns (uint256);

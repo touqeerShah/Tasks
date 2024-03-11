@@ -87,7 +87,6 @@ contract StakingContract is Initializable, UUPSUpgradeable, OwnableUpgradeable, 
         emit Staked(userAddress, _amount);
     }
 
-  
     function unstake(address _token) public {
         address userAddress = msg.sender;
 
@@ -95,7 +94,7 @@ contract StakingContract is Initializable, UUPSUpgradeable, OwnableUpgradeable, 
         uint256 surveyIndex = surveyContract.getLastSurveyId(_token);
         if (surveyIndex != 0) {
             // Get the latest survey details
-            (, , uint256 proposalId) = surveyContract.getSurvey(_token, surveyIndex - 1);
+            (,, uint256 proposalId) = surveyContract.getSurvey(_token, surveyIndex - 1);
 
             // Check the proposal state associated with the survey
             IGovernor.ProposalState state = governor.state(proposalId);
@@ -139,5 +138,5 @@ contract StakingContract is Initializable, UUPSUpgradeable, OwnableUpgradeable, 
         emit MinStakingAmountUpdated(_amount);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal virtual override  onlyOwner{}
+    function _authorizeUpgrade(address newImplementation) internal virtual override onlyOwner {}
 }

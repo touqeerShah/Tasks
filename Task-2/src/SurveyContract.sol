@@ -92,18 +92,17 @@ contract SurveyContract is
     // Emits a SurveyApproved event upon approval.
     function approvedSurvey(address _token, uint256 _surveyId) external onlyOwner {
         surveys[_token][_surveyId].status = true;
-        ongoingSurvey[_token]=false;
+        ongoingSurvey[_token] = false;
         emit SurveyApproved(_surveyId);
     }
 
- 
     // Function to set or update the stakingContract address
     function setStakingContract(address _stakingContract) external onlyRole(ADMIN_ROLE) {
         require(_stakingContract != address(0), "Invalid staking contract address");
         stakingContract = IStakingContract(_stakingContract);
         emit StakingContractUpdated(_stakingContract);
     }
-  
+
     // Returns a hash of the proposal description, used for identifying proposals in the governance contract.
     function getDescriptionHash(string memory proposalDescription) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(proposalDescription));

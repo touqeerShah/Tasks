@@ -1,5 +1,7 @@
 [profile.default]
 solc = "0.8.20"
+build_info = true
+extra_output = ["storageLayout"]
 
 [profile.solc-0.8.17]
 solc = "0.8.17"
@@ -10,6 +12,8 @@ out = "out"
 libs = ["node_modules", "lib"]
 remappings = [ 
 '@openzeppelin/contracts=node_modules/openzeppelin-contracts/contracts',
+'@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts',
+'@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts'
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
