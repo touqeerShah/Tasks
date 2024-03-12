@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
+import {IStakingContract} from "../interfaces/IStakingContract.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract GovernorContract is
     Governor,
@@ -17,6 +19,16 @@ contract GovernorContract is
     GovernorVotesQuorumFraction,
     GovernorTimelockControl
 {
+    IStakingContract public stakingContract;
+
+    event StakingContractUpdated(address indexed newStakingContract);
+
+    modifier onlyStack(address _token, address user) {
+        uint256 amount = stakingContract.getUserStackingAmount(_token, user);
+        require(amount > 0, "Please stake tokens to be allowed to vote");
+        _;
+    }
+
     constructor(
         IVotes _token,
         TimelockController _timelock,
@@ -43,6 +55,24 @@ contract GovernorContract is
 
     function votingPeriod() public view override(Governor, GovernorSettings) returns (uint256) {
         return super.votingPeriod();
+    }
+
+    function castVoteWithReasonV2(address token, uint256 proposalId, uint8 support, string calldata reason)
+        public
+        onlyStack(token, msg.sender)
+        returns (uint256)
+    {
+        return super.castVoteWithReason(proposalId, support, reason);
+    }
+
+    function castVoteWithReason(uint256 proposalId, uint8 support, string calldata reason)
+        public
+        pure
+        override(Governor)
+        returns (uint256)
+    {
+        require(false, "Please Used castVoteWithReason with token Address");
+        return 0;
     }
 
     function quorum(uint256 blockNumber)
@@ -107,5 +137,12 @@ contract GovernorContract is
 
     function _executor() internal view override(Governor, GovernorTimelockControl) returns (address) {
         return super._executor();
+    }
+
+    // Function to set or update the stakingContract address
+    function setStakingContract(address _stakingContract) external {
+        require(_stakingContract != address(0), "Invalid staking contract address");
+        stakingContract = IStakingContract(_stakingContract);
+        emit StakingContractUpdated(_stakingContract);
     }
 }

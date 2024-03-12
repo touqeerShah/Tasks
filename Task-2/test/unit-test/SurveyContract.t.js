@@ -136,7 +136,7 @@ describe("SurveyContract", function () {
             if (developmentChains.includes(network.name)) {
                 await moveBlocks(VOTING_DELAY + 1)
             }
-            await GovernorContract.connect(user).castVoteWithReason(survey[2], 1, "because i like idea");
+            await GovernorContract.connect(user).castVoteWithReasonV2(ERC20MockAddress,survey[2], 1, "because i like idea");
             let isVoted = await GovernorContract.hasVoted(survey[2], user);
             console.log("isVoted ", isVoted)
 
@@ -159,7 +159,7 @@ describe("SurveyContract", function () {
             if (developmentChains.includes(network.name)) {
                 await moveBlocks(VOTING_DELAY + 1)
             }
-            await GovernorContract.connect(user).castVoteWithReason(survey[2], 1, "because i like idea");
+            await GovernorContract.connect(user).castVoteWithReasonV2(ERC20MockAddress,survey[2], 1, "because i like idea");
             let isVoted = await GovernorContract.hasVoted(survey[2], user);
             console.log("isVoted ", isVoted)
             if (developmentChains.includes(network.name)) {
@@ -271,6 +271,26 @@ describe("SurveyContract", function () {
         });
     });
     
+    describe("Try to Vote with Transfer Vote Token", function () {
+        it("returns with error if someone received voting token from other user and try to vote without stacking", async function () {
+            await SurveyContract.connect(user).createSurvey(ERC20MockAddress, "New survey");
+            surveyId = Number(await SurveyContract.getLastSurveyId(ERC20MockAddress)) - 1;
+            const survey = await SurveyContract.surveys(ERC20MockAddress, surveyId);
+    
+            if (developmentChains.includes(network.name)) {
+                await moveBlocks(VOTING_DELAY + 1);
+            }
+    
+            await GovernorContract.connect(user).castVoteWithReasonV2(ERC20MockAddress,survey[2], 1, "because i like idea");
+            await GovernanceToken.connect(user).transfer(redeemer, minStakingAmount);
+            console.log("Balance of Normal User  : ", await GovernanceToken.connect(user).balanceOf(user))
+
+            console.log("Balance of Redeem User  : ", await GovernanceToken.connect(user).balanceOf(redeemer))
+            await expect(GovernorContract.connect(redeemer).castVoteWithReasonV2(ERC20MockAddress,survey[2], 1, "because i like idea"))
+                .to.be.revertedWith("Please stake tokens to be allowed to vote");
+        });
+    });
+    
     
     async function createAndVoteOnSurvey() {
         await SurveyContract.connect(user).createSurvey(ERC20MockAddress, "New survey");
@@ -281,7 +301,7 @@ describe("SurveyContract", function () {
             await moveBlocks(VOTING_DELAY + 1);
         }
 
-        await GovernorContract.connect(user).castVoteWithReason(survey[2], 1, "because i like idea");
+        await GovernorContract.connect(user).castVoteWithReasonV2(ERC20MockAddress,survey[2], 1, "because i like idea");
         if (developmentChains.includes(network.name)) {
             await moveBlocks(VOTING_PERIOD + 1);
         }

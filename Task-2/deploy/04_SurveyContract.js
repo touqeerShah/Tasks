@@ -28,14 +28,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }) 
     // If you need to interact with the contract or output its address, you can do so directly.
     log(`SurveyContract proxy address: ${await Proxy.getAddress()}   :   chain id: ${chainId}`);
     await updateAddress("SurveyContract", await Proxy.getAddress())
-    await setStakingContract(await Proxy.getAddress(), await getAddress("StakingContract"),await getAddress("TimeLock"), log)
+    await setStakingContract(await Proxy.getAddress(), await getAddress("StakingContract"),await getAddress("TimeLock"),await getAddress("GovernorContract"), log)
 }
 
 
-const setStakingContract = async (surveyContractAddress, stakingContractAddress,timeLock, log) => {
+const setStakingContract = async (surveyContractAddress, stakingContractAddress,timeLock,governorContractAddress, log) => {
     const surveyContract = await ethers.getContractAt("SurveyContract", surveyContractAddress);
     const setStakingContractResponse = await surveyContract.setStakingContract(stakingContractAddress);
     await setStakingContractResponse.wait(1);
+    const governorContract = await ethers.getContractAt("GovernorContract", governorContractAddress);
+    const governorContractResponse = await governorContract.setStakingContract(stakingContractAddress);
+    await governorContractResponse.wait(1);
 
     const transferOwnershipResponse = await surveyContract.transferOwnership(timeLock);
     await transferOwnershipResponse.wait(1);
